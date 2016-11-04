@@ -1,0 +1,26 @@
+#!/bin/bash
+
+gcc -g node2dot.c -o node2dot
+
+dir_node="./node/"
+dir_dot="./dot/"
+dir_pic="./pic/"
+
+prog_dot=`which dot`
+
+if [ "x"$prog_dot == "x" ] ; then
+	echo "program dot not fount, install dot using 'sudo apt install dot'"
+	exit 1
+fi
+
+for file in `ls $dir_node | grep -e "\.node$"`
+do
+	if [ ! -f $dir_pic$file.jpg ] ; then
+	echo -n "processing file $file ..."
+	./node2dot --skip-empty --color  < $dir_node$file > $dir_dot$file.dot 2> /dev/null
+	$prog_dot -Tjpg $dir_dot$file.dot -o $dir_pic$file.jpg 2>/dev/null
+	echo "done"
+	fi
+done
+
+rm node2dot
