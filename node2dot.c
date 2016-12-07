@@ -109,6 +109,22 @@ int main(int argc, char *argv[])
     int c;
     int digit_optind = 0;
 
+	/* 
+	 * level indicates if we are in a struct context or not 
+	 * if we are inside a struct level > 0 else level <= 0
+	 * if we are outside a struct, keep on consuming stdin
+	 * until we found the '{' marking as the beginning of
+	 * a struct
+	 *
+	 * we add this because
+	 *   1. we can parse more than one node tree in a file
+	 *   2. if there are anything else such as LOG: statement
+	 *      we can safely ignore then. in the old days, those
+	 *      thing have to be removed by hand.
+	 * */
+	int level = 0;
+	
+
     while (1)
 	{
         int this_option_optind = optind ? optind : 1;
@@ -200,6 +216,7 @@ int main(int argc, char *argv[])
 		switch(c)
 		{
 			case '{': /* a new node*/
+				level++;
 				parent_node_num = get(node_num);
 				parent_elem_num = get(elem_num);
 
@@ -221,11 +238,21 @@ int main(int argc, char *argv[])
 				break;
 			case '}': /* end of the node */
 
+				/* we are not in a struct */
+				if (level <= 0)
+						continue;
+
 				/* restore the parent */
 				set(elem_num,pop()); /* pop elem_num first */
 				set(node_num,pop()); /* pop node_num second */
+				/* we are out if the stack */
+				level--;
 				break;
 			case ':':  /* a new item */
+
+				/* we are not in a struct */
+				if (level <= 0)
+						continue;
 
 				name = get_one_name();
 
@@ -236,6 +263,14 @@ int main(int argc, char *argv[])
 				break;
 			defalut:
 
+				/* if we are not in struct consume input until we meet one */
+				if (level <= 0)
+				{
+					while(EOF!= (c = getc(stdin)) && c !='{' )
+							;
+					/* put it back */
+					ungetc('{',stdin);
+				}
 				break;
 		}	
 
