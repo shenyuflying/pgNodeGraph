@@ -9,7 +9,7 @@ dir_pic="./pic/"
 prog_dot=`which dot`
 
 if [ "x"$prog_dot == "x" ] ; then
-	echo "program dot not fount, install dot using 'sudo apt install dot'"
+	echo "program dot not fount, install dot using 'sudo apt install graphviz'"
 	exit 1
 fi
 
