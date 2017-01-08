@@ -363,14 +363,21 @@ int add_item(int node_n, int elem_n, char *name)
 char * get_one_name()
 {
 	char * buffer = (char*)malloc(LENGTH);
-	int i,len=0;
+	int i=0;
+	int c=0;
+	int len=0;
 	bool found_zero=false, found_non_zero=false;
 	char * pos;
 
 	memset(buffer,0,LENGTH);
-	fgets(buffer,LENGTH,stdin);
+	while((c=getc(stdin)) != ':' && c!='{' && c!='}')
+		buffer[i++]=c;	
+
+	/* push back the token */
+	ungetc(c,stdin);
+
+
 	len = strlen(buffer);
-	buffer[len - 1] = 0;
 
 	/* remove any illeagal char of dot format */
 
@@ -416,8 +423,6 @@ char * get_one_name()
 		free(buffer);
 		return NULL;
 	}
-
-
 
 	return buffer;
 }
