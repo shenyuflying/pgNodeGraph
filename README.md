@@ -129,6 +129,17 @@ so, you must have `dot` or `graphvis` tool installed on  your system.
 ![image_1at08ct2v1f1q7mcdrh1g861qi12f.png-47.7kB][6]
 
 
+# Deploy on httpd hosted by CentOS 8
+```
+1. yum install httpd php
+2. systemctl enable httpd
+3. systemctl enable php
+4. systemctl start httpd
+5. systemctl start php
+6. cp -a www/* \/var/www/html
+7. mkdir /var/www/html/{text,dot,svg}
+8. chmod 777 /var/www/html/{text,dot,svg}
+```
 
   [1]: http://static.zybuluo.com/shenyuflying/3pnykidt3h56e4n5ukn6e9bz/image_1at06c8lbe4r1k4lrcn1o5hll113.png
   [2]: http://static.zybuluo.com/shenyuflying/5hpdpk2pagv927zqtajj1nu3/image_1at05s7f0n6l6i9blt0918kp9.png
